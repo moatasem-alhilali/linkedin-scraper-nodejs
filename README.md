@@ -9,6 +9,7 @@ Production-ready Telegram bot that accepts a LinkedIn post URL and replies in Ar
 - post documents (PDF when available)
 
 Repository: `https://github.com/moatasem-alhilali/linkedin-scraper-nodejs`
+Live deployment: `https://linkedin-scraper-orcin.vercel.app`
 
 ## Features
 
