@@ -10,7 +10,13 @@ import {
   downloadLinkedInMedia,
   scrapeLinkedInPost,
 } from "../lib/linkedin.js";
-import { sendDocument, sendMediaGroup, sendMessage } from "../lib/telegram.js";
+import {
+  sendDocument,
+  sendMediaGroup,
+  sendMessage,
+  sendPhoto,
+  sendVideo,
+} from "../lib/telegram.js";
 import { createZipBuffer } from "../lib/zip.js";
 
 const INVALID_URL_MESSAGE =
@@ -172,7 +178,24 @@ export default async function handler(req, res) {
       (item) => item.mediaType === "document",
     );
 
-    if (streamableMedia.length > 0 && streamableMedia.length <= 10) {
+    if (streamableMedia.length === 1) {
+      const singleFile = streamableMedia[0];
+      if (singleFile.mediaType === "video") {
+        await sendVideo(token, {
+          chatId,
+          buffer: singleFile.buffer,
+          filename: singleFile.filename || "linkedin-video.mp4",
+          mimeType: singleFile.mimeType || "video/mp4",
+        });
+      } else {
+        await sendPhoto(token, {
+          chatId,
+          buffer: singleFile.buffer,
+          filename: singleFile.filename || "linkedin-image.jpg",
+          mimeType: singleFile.mimeType || "image/jpeg",
+        });
+      }
+    } else if (streamableMedia.length > 1 && streamableMedia.length <= 10) {
       await sendMediaGroup(token, { chatId, mediaFiles: streamableMedia });
     } else if (streamableMedia.length > 10) {
       const zipBuffer = await createZipBuffer(streamableMedia);
