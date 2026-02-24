@@ -165,7 +165,9 @@ export default async function handler(req, res) {
       return;
     }
 
-    const downloadedMedia = await downloadLinkedInMedia(mediaTargets);
+    const downloadedMedia = await downloadLinkedInMedia(mediaTargets, {
+      referer: post.preferredReferer,
+    });
     if (downloadedMedia.length === 0) {
       res.status(200).json({ ok: true });
       return;
